@@ -34,7 +34,7 @@ async function initMap() {
 
     try {
         // Fetching data from database
-        let res = await getData()
+        let res = await getStopsAndLocations()
 
         // Iterating over stops and adding a marker at the stop location
         for (var i = 0; i < res.length; i++) {
@@ -52,17 +52,35 @@ async function initMap() {
     } catch (error) {
         console.log(error)
     }
+
+    try {
+        let ferries = await getFerryRealtimePositions()
+        console.log(ferries)
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 
 // Helper functions
 
 // Fetches stop location data from database
-async function getData() {
+async function getStopsAndLocations() {
     try {
         let data = await fetch("http://127.0.0.1:8081/api/stop_locations")
         let response = await data.json()
         
+        return response
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+async function getFerryRealtimePositions() {
+    try {
+        let data = await fetch("http://127.0.0.1:8081/api/ferries")
+        let response = await data.json()
+
         return response
     } catch (error) {
         console.log(error)

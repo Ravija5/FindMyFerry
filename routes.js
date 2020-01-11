@@ -1,6 +1,8 @@
 let express = require('express')
+let axios = require('axios')
 let cors = require('cors')
 let config = require('./config')
+let helper = require('./helper_modules/realtime_data_to_json')
 let app = express()
 
 // CORS stuff
@@ -27,6 +29,24 @@ app.get('/api/stop_locations', async function(req, res) {
     } catch (error) {
         console.log(error)
         res.status(500).json("Server error")
+    }
+})
+
+app.get('/api/ferries', async function(req, res) {
+    try {
+        let response = await axios({
+                            method: 'get',
+                            url: 'https://api.transport.nsw.gov.au/v1/gtfs/vehiclepos/ferries/sydneyferries?debug=true',
+                            headers: {
+                                'Authorization': 'apikey ' + config.API_KEY
+                            }
+                        })
+        let ferries = await response.data
+        let jsonFerries = helper.convertToJson(ferries)
+        res.status(200).json(jsonFerries)
+    } catch (error) {
+        console.log(error)
+        res.status(400).json(error)
     }
 })
 
