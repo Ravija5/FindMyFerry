@@ -33,29 +33,6 @@ async function initMap() {
         scaledSize: new google.maps.Size(22, 22), // scaled size
     }
 
-    // Icon styles need to be discussed (color, size, etc.)
-    // Ferry Icon for ferries with bearing between 0-179
-    // let ferryIconFacingEast = {
-    //     path: getFerrySvgFacingEast(),
-    //     anchor: new google.maps.Point(25,25),
-    //     strokeWeight: 1,
-    //     fillOpacity: 1,
-    //     fillColor: '#FF5850',
-    //     scale: .45,
-    //     rotation: 0
-    // }
-
-    // // Ferry Icon for ferries with bearing between 180-359
-    // let ferryIconFacingWest = {
-    //     path: getFerrySvgFacingWest(),
-    //     anchor: new google.maps.Point(25,25),
-    //     strokeWeight: 1,
-    //     fillOpacity: 1,
-    //     fillColor: '#FF5850',
-    //     scale: .45,
-    //     rotation: 0
-	// }
-
     // Stops and their Locations
     try {
         // Fetching stops data from database
@@ -88,41 +65,35 @@ async function displayFerries() {
         let ferries = await getFerryRealtimePositions()
         console.log(ferries)
 
-		// Removing current ferry markers to load new ferry markers
-		// at their updated positions
-		if (ferryMarkers != {}) {
-			setMapOnAll(null)
-			ferryMarkers = {}
-		}
-
         ferries.map(f => {
 			ferryPos = f['entity']['vehicle']['position']
 			
 			// Get correct ferry icon
-            let ferryIcon = getFerryIcon(ferryPos['bearing'])
+			let ferryIcon = getFerryIcon(ferryPos['bearing'])
+			let tripId = f['entity']['vehicle']['trip']['trip_id']
 
 			// Creating new ferry marker
             let marker = new google.maps.Marker({
                 position: new google.maps.LatLng(ferryPos['latitude'], ferryPos['longitude']),
                 icon: ferryIcon,
                 title: f['entity']['vehicle']['vehicle']['label'],
-                id: f['entity']['id']
+                id: tripId
 			})
 			
 			// Checking if ferry already exists on map
 			// If yes, only update it's position and bearing
 			// If no, add a new marker on map
-			if (f['entity']['id'] in ferryMarkers) {
+			if (tripId in ferryMarkers) {
 				// Get correct ferry icon according to new bearing
+				currFerry = ferryMarkers[tripId]
 				ferryIcon = getFerryIcon(ferryPos['bearing'])
 
 				// Set proper co-ordinates and icon
-				ferryMarkers[f['entity']['id']].setPosition(new google.maps.LatLng(ferryPos['latitude'], ferryPos['longitude']))
-				ferryMarkers[f['entity']['id']].setIcon(ferryIcon)
-				ferryMarkers[f['entity']['id']].setMap(map)
+				currFerry.setPosition(new google.maps.LatLng(ferryPos['latitude'], ferryPos['longitude']))
+				currFerry.setIcon(ferryIcon)
 			}
 			else { 
-				ferryMarkers[f['entity']['id']] = marker
+				ferryMarkers[tripId] = marker
 				marker.addListener('click', function() { console.log(marker.id) })
 				marker.setMap(map)
 			}
