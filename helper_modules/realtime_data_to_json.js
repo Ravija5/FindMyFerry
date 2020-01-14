@@ -23,6 +23,7 @@ exports.convertToJson = function(ferries) {
     ferries = ferries.replace(/"license_plate": "([.]*)",\n/g, `"license_plate": "$1"\n`)
     ferries = ferries.replace(/},\n/g, `}\n`)
     ferries = ferries.replace(/}\n\s+\"/g, `},\n \"`)
+    ferries = ferries.replace(/[A-Za-z]\\/g, "O")
     ferries = "[" + ferries + "]"
     
     return JSON.parse(ferries)
