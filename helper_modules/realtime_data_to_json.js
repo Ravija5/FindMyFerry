@@ -24,7 +24,15 @@ exports.convertToJson = function(ferries) {
     ferries = ferries.replace(/},\n/g, `}\n`)
     ferries = ferries.replace(/}\n\s+\"/g, `},\n \"`)
     ferries = ferries.replace(/[A-Za-z]\\/g, "O")
-    ferries = "[" + ferries + "]"
     
-    return JSON.parse(ferries)
+    // No ferries obtained from API
+    // ferries.length === 1 means ferries only has the character "}" in it
+    if (ferries.length === 1) {
+        return JSON.parse("[]")
+    }
+    // One or more ferries obtained from API
+    else {
+        ferries = "[" + ferries + "]"
+        return JSON.parse(ferries)
+    }
 }
