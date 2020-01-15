@@ -61,22 +61,26 @@ async function initMap() {
 
 async function displayFerries() {
 	try {
+		// List holding up-to-date trip IDs (for use in removing markers for completed ferries)
+		let tripIdsList = []
+
         // Fetching ferry positions
         let ferries = await getFerryRealtimePositions()
-        console.log(ferries)
+		// console.log(ferries)
 
         ferries.map(f => {
-			ferryPos = f['entity']['vehicle']['position']
+			let ferryPos = f['entity']['vehicle']['position']
+			let tripId = f['entity']['vehicle']['trip']['trip_id']
+			let ferryLabel = f['entity']['vehicle']['vehicle']['label']
 			
+			if (!(tripIdsList.includes(tripId))) { tripIdsList.push(tripId) }
 			// Get correct ferry icon
 			let ferryIcon = getFerryIcon(ferryPos['bearing'])
-			let tripId = f['entity']['vehicle']['trip']['trip_id']
-
 			// Creating new ferry marker
             let marker = new google.maps.Marker({
                 position: new google.maps.LatLng(ferryPos['latitude'], ferryPos['longitude']),
                 icon: ferryIcon,
-                title: f['entity']['vehicle']['vehicle']['label'],
+                title: ferryLabel,
                 id: tripId
 			})
 			
@@ -89,8 +93,13 @@ async function displayFerries() {
 				ferryIcon = getFerryIcon(ferryPos['bearing'])
 
 				// Set proper co-ordinates and icon
-				currFerry.setPosition(new google.maps.LatLng(ferryPos['latitude'], ferryPos['longitude']))
+				// currFerry.setPosition(new google.maps.LatLng(ferryPos['latitude'], ferryPos['longitude']))
+				let diffLat = (ferryPos['latitude'] - currFerry.position.lat()) / 100
+				let diffLng = (ferryPos['longitude'] - currFerry.position.lng()) / 100
 				currFerry.setIcon(ferryIcon)
+
+				// Update ferry position (smoothly)
+				moveFerry(0, tripId, currFerry.position.lat(), currFerry.position.lng(), diffLat, diffLng)
 			}
 			else { 
 				ferryMarkers[tripId] = marker
@@ -98,6 +107,15 @@ async function displayFerries() {
 				marker.setMap(map)
 			}
 		})
+
+		// Removing ferry markers corresponding to completed ferry trips
+		for (let trip in ferryMarkers) {
+			if (!tripIdsList.includes(trip)) {
+				ferryMarkers[trip].setMap(null)
+				delete ferryMarkers[trip]
+			}
+		}
+		tripIdsList = []
 		
     } catch (error) {
         console.log(error)
@@ -217,9 +235,14 @@ function getFerrySvgFacingWest() {
     32.00,61.00 18.00,55.00 18.00,55.00`
 }
 
-// Removes Ferries from map
-function setMapOnAll(map) {
-	for (let ferry in ferryMarkers) {
-	  ferryMarkers[ferry].setMap(map);
+// Moves ferry marker smoothly to latest position
+function moveFerry(i, tripId, currLat, currLng, diffLat, diffLng) {
+	currLat += diffLat
+	currLng += diffLng
+	ferryMarkers[tripId].setPosition(new google.maps.LatLng(currLat, currLng))
+
+	if (i != 100) {
+		i++;
+		setTimeout(moveFerry.bind(this, i, tripId, currLat, currLng, diffLat, diffLng), 50)
 	}
-  }
+}
