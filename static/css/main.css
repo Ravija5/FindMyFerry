@@ -1,9 +1,6 @@
-#map {
-    height: 100%;
-}
-  /* Optional: Makes the sample page fill the window. */
-  /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
+/* Optional: Makes the sample page fill the window.
+   Always set the map height explicitly to define the size of the div
+   element that contains the map. */
 html, body {
     /* width: 88%; */
     height: 100%;
@@ -11,4 +8,119 @@ html, body {
     /* margin-top: 0; */
     /* margin-left: 12%; */
     padding: 0;
+}
+
+#main {
+    height: 100%;
+    position: relative;
+}
+
+#map {
+    height: 100%;
+    /* position: absolute; */
+    /* overflow: none; */
+}
+
+.panel {
+    position: absolute;
+    background-color: white;
+    height: 100%;
+    width: 22%;
+    top: 0px;
+    left: 0px;
+}
+
+.panel--opening {
+    position: absolute;
+    background-color: white;
+    height: 100%;
+    width: 22%;
+    top: 0px;
+    left: -22%;
+    animation-name: panel-slide-in;
+    animation-duration: 0.7s;
+}
+
+.panel--closing {
+    position: absolute;
+    background-color: white;
+    height: 100%;
+    width: 22%;
+    top: 0px;
+    left: 0px;
+    animation-name: panel-slide-out;
+    animation-duration: 0.7s;
+}
+
+.panel--closed {
+    position: absolute;
+    background-color: white;
+    height: 100%;
+    width: 22%;
+    top: 0px;
+    left: -22%;
+}
+
+.close-panel-btn {
+    position: absolute;
+    cursor: pointer;
+    height: 30px;
+    width: 10px;
+    background-color: green;
+    top: 45%;
+    left: 22%;
+}
+
+.close-panel-btn--opening {
+    position: absolute;
+    cursor: pointer;
+    height: 30px;
+    width: 10px;
+    background-color: green;
+    top: 45%;
+    left: 0%;
+    animation-name: close-btn-slide-in;
+    animation-duration: 0.7s;
+}
+
+.close-panel-btn--closing {
+    position: absolute;
+    cursor: pointer;
+    height: 30px;
+    width: 10px;
+    background-color: green;
+    top: 45%;
+    left: 22%;
+    animation-name: close-btn-slide-out;
+    animation-duration: 0.7s;
+}
+
+.close-panel-btn--closed {
+    position: absolute;
+    cursor: pointer;
+    height: 30px;
+    width: 10px;
+    background-color: green;
+    top: 45%;
+    left: 0%;
+}
+
+@keyframes panel-slide-in {
+    from { left: -22% }
+    to { left: 0px }
+}
+
+@keyframes panel-slide-out {
+    from { left: 0px }
+    to { left: -22% }
+}
+
+@keyframes close-btn-slide-in {
+    from { left: 0%; }
+    to { left: 22%; }
+}
+
+@keyframes close-btn-slide-out {
+    from { left: 22%; }
+    to { left: 0%; }
 }
