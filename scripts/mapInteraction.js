@@ -1,6 +1,6 @@
 let map
 let mapInteractionScriptTag = document.createElement('script');
-let ferryMarkers = {} // Object to hold current ferry markers 
+let ferryMarkers = {} // Object to hold current ferry markers
 
 fetch("http://127.0.0.1:8081/api/map_key")
 .then(res => {
@@ -17,12 +17,15 @@ async function initMap() {
     // (refer to https://developers.google.com/maps/documentation/javascript/controls
     // and https://developers.google.com/maps/documentation/javascript/events)
     map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: -33.85, lng: 151.2},
+        center: {lat: -33.85, lng: 151.15},
         zoom: 12,
         mapTypeControlOptions: {
             style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
             position: google.maps.ControlPosition.RIGHT_TOP
         },
+        options: {
+          gestureHandling: 'greedy'
+        },  // To disable ctrl+scroll zooming (which automatically appears if there's another html element alongside map) 
         streetViewControl: false,
         fullscreenControl: false
     });
