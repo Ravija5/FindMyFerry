@@ -1,0 +1,25 @@
+{
+  "name": "findmyferry",
+  "version": "1.0.0",
+  "description": "",
+  "main": "routes.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ravija5/FindMyFerry.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ravija5/FindMyFerry/issues"
+  },
+  "homepage": "https://github.com/Ravija5/FindMyFerry#readme",
+  "devDependencies": {
+    "axios": "^0.19.2",
+    "cors": "^2.8.5",
+    "express": "^4.17.1"
+  }
+}
